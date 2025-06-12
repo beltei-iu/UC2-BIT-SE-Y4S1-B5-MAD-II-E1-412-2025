@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mad_2_412/data/shared_pref_data.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -8,11 +10,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? fullName;
+
+  @override
+  void initState() {
+    _loadUser();
+  }
+
+  Future<void> _loadUser() async {
+    final sharedPref = await SharedPreferences.getInstance();
+    String? username = await sharedPref.getString(SharedPrefData.FULL_NAME);
+    String? email = await sharedPref.getString(SharedPrefData.EMAIL);
+    print("username : $username");
+    print("email : $email");
+    String subEmail = email != null ? email.split("@")[0] : "Guest";
+    setState(() {
+      fullName = username ?? subEmail;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hi, Guest'),
+        title: Text('Hi, ${fullName.toString()}'),
         backgroundColor: Colors.white,
       ),
       body: Column(children: [_searchWidget]),

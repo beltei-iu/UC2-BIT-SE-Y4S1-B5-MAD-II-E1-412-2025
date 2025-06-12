@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mad_2_412/data/shared_pref_data.dart';
 import 'package:mad_2_412/route/app_route.dart';
 import 'package:mad_2_412/widgets/logo_widget.dart';
 import 'package:mad_2_412/widgets/social_login_widget.dart';
@@ -15,6 +16,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isObscureText = true;
   bool _isEmailValid = false;
+
+  final _fullNameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             const SizedBox(height: 20),
             _passwordTextFormField,
             const SizedBox(height: 20),
-            _loginButton,
+            _registerButton,
             const SizedBox(height: 20),
             SocialLoginWidget(),
             _navigateToLoginButton,
@@ -50,6 +55,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget get _fullNameTextFormField {
     return TextFormField(
+      controller: _fullNameController,
       validator: (value) =>
           value == null || value.isEmpty ? 'Please enter your full name' : null,
       decoration: InputDecoration(
@@ -63,6 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget get _emailTextFormField {
     return TextFormField(
+      controller: _emailController,
       onChanged: (value) => {
         if (value.contains("@"))
           {
@@ -92,6 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Widget get _passwordTextFormField {
     return TextFormField(
+      controller: _passwordController,
       obscureText: _isObscureText,
 
       validator: (value) {
@@ -128,7 +136,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget get _loginButton {
+  Widget get _registerButton {
     return SizedBox(
       height: 40,
       width: MediaQuery.of(context).size.width,
@@ -141,6 +149,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         onPressed: () {
           if (_formKey.currentState?.validate() ?? false) {
+            String fullName = _fullNameController.text;
+            String email = _emailController.text;
+            String password = _passwordController.text;
+
+            print("Full Name : $fullName");
+            print("Email : $email");
+            print("Password : $password");
+
+            SharedPrefData.register(fullName, email, password);
+
             // Perform login action
             // ScaffoldMessenger.of(
             //   context,
