@@ -7,6 +7,7 @@ import 'package:mad_2_412/screens/register_screen.dart';
 import 'package:mad_2_412/screens/splash_screen.dart';
 
 class AppRoute {
+
   static const String splash = '/';
   static const String login = '/login';
   static const String register = '/register';
@@ -14,7 +15,6 @@ class AppRoute {
   static const String otpConfirm = '/otpConfirm';
   static const String home = '/home';
   static const String profile = '/profile';
-
   static const String about = '/about';
   static const String contact = '/contact';
   static const String help = '/help';
@@ -50,3 +50,4 @@ class AppRoute {
     );
   }
 }
+

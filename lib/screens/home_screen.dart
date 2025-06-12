@@ -13,7 +13,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Hi, Guest'),
-        elevation: 2,
         backgroundColor: Colors.white,
       ),
       body: Column(children: [_searchWidget]),

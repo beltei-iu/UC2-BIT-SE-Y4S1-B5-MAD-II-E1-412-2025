@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mad_2_412/route/app_route.dart';
 import 'package:mad_2_412/widgets/logo_widget.dart';
 import 'package:mad_2_412/widgets/social_login_widget.dart';
+import 'package:mad_2_412/data/shared_pref_data.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,8 +15,11 @@ class _LoginScreenState extends State<LoginScreen> {
   
   final _formKey = GlobalKey<FormState>();
 
-  bool _isObscureText = true;
   bool _isEmailValid = false;
+  bool _isObscureText = true;
+
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget get _emailTextFormField {
     return TextFormField(
+      controller: _emailController,
       onChanged: (value) => {
         if (value.contains("@"))
           {
@@ -78,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget get _passwordTextFormField {
     return TextFormField(
+      controller: _passwordController,
       obscureText: _isObscureText,
-
       validator: (value) {
         if (value == null || value.isEmpty) {
           return "Please enter your password";
@@ -128,6 +133,15 @@ class _LoginScreenState extends State<LoginScreen> {
         onPressed: () {
           if (_formKey.currentState?.validate() ?? false) {
             // Perform login action
+
+              String email = _emailController.text;
+              String password = _passwordController.text;
+
+              print("Email : $email");
+              print("Password : $password");
+
+              SharedPrefData.login(email, password);
+
             // ScaffoldMessenger.of(
             //   context,
             // ).showSnackBar(const SnackBar(content: Text('Logging in...')));

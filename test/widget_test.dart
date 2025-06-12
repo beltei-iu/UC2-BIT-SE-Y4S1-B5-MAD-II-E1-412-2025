@@ -10,4 +10,3 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mad_2_412/main.dart';
 
-void main() {}

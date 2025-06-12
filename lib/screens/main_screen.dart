@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mad_2_412/screens/home_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -8,23 +9,22 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+
+  int _currentIndex = 0;
+
+  final List<Widget> screens = [
+    HomeScreen(),
+     HomeScreen(),
+      HomeScreen(),
+       HomeScreen()
+  ];
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text('Welcome to the Main Screen!'),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to another screen
-              },
-              child: const Text('Go to Another Screen'),
-            ),
-          ],
-        ),
-      ),
+      body: screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         unselectedItemColor: Colors.grey,
         selectedItemColor: Colors.blue,
