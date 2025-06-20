@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mad_2_412/data/file_storage_data.dart';
 import 'package:mad_2_412/route/app_route.dart';
-import 'package:mad_2_412/screens/splash_screen.dart';
 
 void main() {
   // This is the entry point of the application. The runApp function takes a
@@ -9,11 +9,9 @@ void main() {
   final app = App();
 
   runApp(app);
-    
 }
-  
-class App extends StatelessWidget {
 
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,7 +22,7 @@ class App extends StatelessWidget {
       initialRoute: AppRoute.splash,
       onGenerateRoute: AppRoute.onGenerateRoute,
       navigatorKey: AppRoute.key,
-      debugShowCheckedModeBanner: false
+      debugShowCheckedModeBanner: false,
     );
   }
 }
