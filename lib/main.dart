@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mad_2_412/data/file_storage_data.dart';
+import 'package:mad_2_412/data/sqflite_db_data.dart';
 import 'package:mad_2_412/route/app_route.dart';
 
 void main() {
   // This is the entry point of the application. The runApp function takes a
   WidgetsFlutterBinding.ensureInitialized();
 
-  final app = App();
+  // Init DB
+  SqfliteDbData.instance.database;
 
+  final app = App();
   runApp(app);
 }
 
