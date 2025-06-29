@@ -205,7 +205,5 @@ class _HomeScreenState extends State<HomeScreen> {
     // bookId=1,price=20000,qty=1,discount=0
     String data = "bookId=$bookId,price=$price,qty=$qty,discount=$discount";
     await FileStorageData.writeDataToFile(data);
-
-
   }
 }

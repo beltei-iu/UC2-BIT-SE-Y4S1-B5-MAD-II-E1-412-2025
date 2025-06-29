@@ -7,6 +7,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileStorageData {
+
   static String filePath = "assets/data/book.txt";
 
   static Future<String> get _localPath async {
