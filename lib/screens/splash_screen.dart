@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mad_2_412/route/app_route.dart';
+import 'package:mad_2_412/screens/login_screen.dart';
+import 'package:mad_2_412/screens/main_screen.dart';
 import 'package:mad_2_412/widgets/logo_widget.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -24,9 +27,15 @@ class SplashScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                   onPressed: () {
-                    AppRoute.key.currentState?.pushReplacementNamed(
-                      AppRoute.login,
-                    );
+
+                    //
+                    // AppRoute.key.currentState?.pushReplacementNamed(
+                    //   AppRoute.login,
+                    // );
+
+                    // GetX
+                    // Get.toNamed(AppRoute.login);
+                    Get.off(LoginScreen());
                   },
                   child: Text(
                     "Login An Account",
@@ -41,9 +50,10 @@ class SplashScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
                   onPressed: () {
-                    AppRoute.key.currentState?.pushReplacementNamed(
-                      AppRoute.home,
-                    );
+                    // AppRoute.key.currentState?.pushReplacementNamed(
+                    //   AppRoute.home,
+                    // );
+                    Get.off(MainScreen());
                   },
                   child: Text(
                     "Logon As Guest",

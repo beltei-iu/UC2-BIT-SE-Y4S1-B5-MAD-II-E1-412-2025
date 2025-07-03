@@ -38,8 +38,8 @@ class _MainScreenState extends State<MainScreen> {
         BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'favorite'),
         BottomNavigationBarItem(icon: Icon(Icons.shopping_cart), label: 'Cart'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: 'Account',
+          icon: Icon(Icons.more_vert),
+          label: 'More',
         ),
       ],
       onTap: (index) {

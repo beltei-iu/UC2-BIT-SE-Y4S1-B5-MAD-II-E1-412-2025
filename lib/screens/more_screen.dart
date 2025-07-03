@@ -13,14 +13,36 @@ class _MoreScreenState extends State<MoreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            SharedPrefData.logout();
-            AppRoute.key.currentState!.pushReplacementNamed(AppRoute.splash);
-          },
-          child: Text("Logout"),
-        ),
+      appBar: AppBar(
+        title: Text("More"),
+        centerTitle: true,
+        elevation: 0.5,
+        backgroundColor: Colors.red,
+      ),
+      body: ListView(
+        children: [
+          ListTile(
+            leading: Icon(Icons.language),
+            title: Text("Language"),
+            trailing: Icon(Icons.navigate_next),
+          ),
+          Divider(),
+          ListTile(
+            leading: Icon(Icons.dark_mode),
+            title: Text("Theme"),
+            trailing: Icon(Icons.navigate_next),
+          ),
+          Divider(),
+          // Center(
+          //   child: ElevatedButton(
+          //     onPressed: () {
+          //       SharedPrefData.logout();
+          //       AppRoute.key.currentState!.pushReplacementNamed(AppRoute.splash);
+          //     },
+          //     child: Text("Logout"),
+          //   ),
+          // )
+        ],
       ),
     );
   }
