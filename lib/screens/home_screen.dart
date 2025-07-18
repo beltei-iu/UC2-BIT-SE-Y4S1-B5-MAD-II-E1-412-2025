@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Hi, ${fullName.toString()}'),
+        title: Text("hi".tr),
         backgroundColor: Colors.white,
 
         actions: [
@@ -183,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget get _bookRecommendTitle {
     return Padding(
-      padding: EdgeInsets.only(left: 8, right: 8),
+      padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -344,7 +344,5 @@ class _HomeScreenState extends State<HomeScreen> {
     // bookId=1,price=20000,qty=1,discount=0
     String data = "bookId=$bookId,price=$price,qty=$qty,discount=$discount";
     await FileStorageData.writeDataToFile(data);
-
-
   }
 }
