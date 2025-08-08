@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:get/get.dart';
 import 'package:mad_2_412/route/app_route.dart';
+import 'package:mad_2_412/screens/main_screen.dart';
 import 'package:mad_2_412/widgets/logo_widget.dart';
 import 'package:mad_2_412/widgets/social_login_widget.dart';
 import 'package:mad_2_412/data/shared_pref_data.dart';
@@ -12,7 +16,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  
   final _formKey = GlobalKey<FormState>();
 
   bool _isEmailValid = false;
@@ -20,6 +23,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +37,46 @@ class _LoginScreenState extends State<LoginScreen> {
       child: Form(
         key: _formKey,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            LogoWidget(),
-            SizedBox(height: 20),
-            _emailTextFormField,
-            const SizedBox(height: 20),
-            _passwordTextFormField,
-            const SizedBox(height: 20),
-            _loginButton,
-            const SizedBox(height: 20),
-            SocialLoginWidget(),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LogoWidget(),
+                  SizedBox(height: 20),
+                  _emailTextFormField,
+                  const SizedBox(height: 20),
+                  _passwordTextFormField,
+                  const SizedBox(height: 20),
+                  _loginButton,
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          _signInWithFacebook();
+                        },
+                        icon: Image.asset(
+                          'assets/images/facebook.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: Image.asset(
+                          'assets/images/google.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
+                    ],
+                  ),
+                  _skip,
+                ],
+              ),
+            ),
             _navigateToRegisterButton,
           ],
         ),
@@ -132,24 +165,25 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
         onPressed: () {
           if (_formKey.currentState?.validate() ?? false) {
-            // Perform login action
+            String email = _emailController.text;
+            String password = _passwordController.text;
 
-              String email = _emailController.text;
-              String password = _passwordController.text;
-
-              print("Email : $email");
-              print("Password : $password");
-
-              SharedPrefData.login(email, password);
-
-            // ScaffoldMessenger.of(
-            //   context,
-            // ).showSnackBar(const SnackBar(content: Text('Logging in...')));
-            AppRoute.key.currentState?.pushReplacementNamed(AppRoute.home);
+            print("Email : $email");
+            print("Password : $password");
+            onLogin(email, password);
           }
         },
         child: Text("Login"),
       ),
+    );
+  }
+
+  Widget get _skip {
+    return TextButton(
+      onPressed: () {
+        Get.off(MainScreen());
+      },
+      child: const Text("Skip", style: TextStyle(color: Colors.blue)),
     );
   }
 
@@ -164,5 +198,58 @@ class _LoginScreenState extends State<LoginScreen> {
         style: TextStyle(color: Colors.blue),
       ),
     );
+  }
+
+  Future<void> onLogin(String email, String password) async {
+    try {
+      await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((UserCredential user) {
+            print("User :  $user");
+            SharedPrefData.login(email, password);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Login successful.')));
+            // Navigation
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => MainScreen()),
+            );
+            //Get.off(MainScreen());
+          })
+          .catchError((e) {
+            print("Error : $e");
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text("Login : $e")));
+          });
+    } catch (e) {
+      print("Error : $e");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Login : $e")));
+    }
+  }
+
+  Future<void> _signInWithFacebook() async {
+    try {
+      LoginResult result = await FacebookAuth.instance.login();
+      if (result.status == LoginStatus.success) {
+        // OAuthCredential credential = FacebookAuthProvider.credential(
+        //   result.accessToken!.tokenString,
+        // );
+        // await FirebaseAuth.instance.signInWithCredential(credential);
+        Get.offAll(MainScreen());
+
+        print("Data : ${result.accessToken!.tokenString}");
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Error ${result.message}")));
+      }
+    } catch (error) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("$error")));
+    }
   }
 }

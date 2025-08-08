@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mad_2_412/controller/cart_controller.dart';
@@ -13,7 +14,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:badges/badges.dart' as badges;
 
 class HomeScreen extends StatefulWidget {
-
   const HomeScreen({super.key});
 
   @override
@@ -21,12 +21,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? fullName;
+  String? fullName = "Guest";
 
   final _cartTotal = 0.obs;
   List<Book> _books = [];
   final orderService = OrderService.instance;
   final cartController = Get.put(CartController());
+
+  final bookServicce = BookService();
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -35,27 +39,25 @@ class _HomeScreenState extends State<HomeScreen> {
     _loadOrderItems();
   }
 
-
-  Future<void> _getBooks()  async {
+  Future<void> _getBooks() async {
     final bookService = BookService();
 
-    for(int i = 0 ; i < 4; i++){
-      final book = Book(
-        title: "Book $i",
-        author: "Author $i",
-        description: "Description $i",
-        price: 20000,
-        discount: 0
-      );
-      bookService.insertBook(book);
-    }
+    // for (int i = 0; i < 4; i++) {
+    //   final book = Book(
+    //     title: "Book $i",
+    //     author: "Author $i",
+    //     description: "Description $i",
+    //     price: 20000,
+    //     discount: 0,
+    //   );
+    //   bookService.insertBook(book);
+    // }
 
-    List<Book> books = await bookService.getBooks();
+    List<Book> books = await bookService.getBooksFromFirebase();
     print("Book : ${books.length}");
     setState(() {
       _books = books;
     });
-
   }
 
   Future<void> _loadOrderItems() async {
@@ -82,26 +84,20 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _loadUser() async {
-    final sharedPref = await SharedPreferences.getInstance();
-    String? username = await sharedPref.getString(SharedPrefData.FULL_NAME);
-    String? email = await sharedPref.getString(SharedPrefData.EMAIL);
-    print("username : $username");
-    print("email : $email");
-    String subEmail = email != null ? email.split("@")[0] : "Guest";
+    final User? user = _auth.currentUser;
     setState(() {
-      fullName = username ?? subEmail;
+      fullName = user!.email!.split("@")[0];
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     //final cartProvider = Provider.of<CartProvider>(context, listen: true);
     //_loadOrderItems(cartProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("hi".tr),
+        title: Text("hi".tr + " $fullName"),
         backgroundColor: Colors.white,
 
         actions: [
@@ -109,10 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
             position: badges.BadgePosition.topEnd(top: 0, end: 3),
             showBadge: true,
             badgeStyle: badges.BadgeStyle(badgeColor: Colors.red),
-            badgeContent: Obx(() => Text(
-              "${cartController.cartTotal}",
-              style: TextStyle(color: Colors.white),
-            )),
+            badgeContent: Obx(
+              () => Text(
+                "${cartController.cartTotal}",
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
             child: IconButton(
               icon: Icon(Icons.shopping_cart),
               onPressed: () {},
@@ -121,18 +119,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: ListView(
-          children: [
-            _searchWidget,
-            _sliderWidget,
-            _bookTitle,
-            _booksWidget,
-            _bookRecommendTitle,
-            _booksRecommendWidget,
-          ]),
+        children: [
+          _searchWidget,
+          _sliderWidget,
+          _bookTitle,
+          _booksWidget,
+          _bookRecommendTitle,
+          _booksRecommendWidget,
+        ],
+      ),
     );
   }
-
-
 
   Widget get _searchWidget {
     return Container(
@@ -151,18 +148,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _sliderWidget {
-
-    List<Widget> images = List.generate(3, (i){
-      return Image.asset("assets/images/HQ.png", height: 200,fit: BoxFit.cover,);
+    List<Widget> images = List.generate(3, (i) {
+      return Image.asset(
+        "assets/images/HQ.png",
+        height: 200,
+        fit: BoxFit.cover,
+      );
     }).toList();
 
     return SizedBox(
       height: 200,
       child: CarouselView(
-          elevation: 2,
-          itemSnapping: true,
-          itemExtent: double.infinity,
-          children: images
+        elevation: 2,
+        itemSnapping: true,
+        itemExtent: double.infinity,
+        children: images,
       ),
     );
   }
@@ -180,7 +180,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
   Widget get _bookRecommendTitle {
     return Padding(
       padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
@@ -195,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _booksWidget {
-
     // List<Widget> _bookItems = List.generate(10, (index) {
     //   return _bookCartItem(index);
     // }).toList();
@@ -245,13 +243,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   );
 
-                  final orderReq = Order(
-                    bookId: book.id,
-                    qty: 1,
-                    price: book.price,
-                  );
+                  // final orderReq = Order(
+                  //   bookId: book.id,
+                  //   qty: 1,
+                  //   price: book.price,
+                  // );
                   //orderService.insertOrder(orderReq);
-                  cartController.addToCart(orderReq);
+                  //cartController.addToCart(orderReq);
                   showDialog(context: context, builder: (context) => alert);
                 },
                 child: Icon(Icons.add),
@@ -266,12 +264,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget get _booksRecommendWidget {
-
     // List<Widget> _bookItems = List.generate(10, (index) {
     //   return _bookCartItem(index);
     // }).toList();
 
-    List<Widget> _bookItems = _books.map((e) => _bookCartRecommendItem(e)).toList();
+    List<Widget> _bookItems = _books
+        .map((e) => _bookCartRecommendItem(e))
+        .toList();
 
     // Option 1  : Using ListView
     // return SizedBox(
@@ -314,13 +313,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   );
 
-                  final orderReq = Order(
-                    bookId: book.id,
-                    qty: 1,
-                    price: book.price,
-                  );
+                  // final orderReq = Order(
+                  //   bookId: book.id,
+                  //   qty: 1,
+                  //   price: book.price,
+                  // );
                   // orderService.insertOrder(orderReq);
-                  cartController.addToCart(orderReq);
+                  // cartController.addToCart(orderReq);
 
                   showDialog(context: context, builder: (context) => alert);
                 },
@@ -343,6 +342,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }) async {
     // bookId=1,price=20000,qty=1,discount=0
     String data = "bookId=$bookId,price=$price,qty=$qty,discount=$discount";
-    await FileStorageData.writeDataToFile(data);
+    //await FileStorageData.writeDataToFile(data);
   }
 }

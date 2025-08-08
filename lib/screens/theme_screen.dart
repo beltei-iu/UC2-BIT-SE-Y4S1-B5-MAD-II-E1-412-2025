@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ThemeScreen extends StatefulWidget {
-
   const ThemeScreen({super.key});
 
   @override
@@ -11,7 +9,6 @@ class ThemeScreen extends StatefulWidget {
 }
 
 class _ThemeScreenState extends State<ThemeScreen> {
-
   bool _isDark = false;
 
   @override
@@ -22,7 +19,6 @@ class _ThemeScreenState extends State<ThemeScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Theme"),
@@ -35,23 +31,29 @@ class _ThemeScreenState extends State<ThemeScreen> {
           ListTile(
             leading: Icon(Icons.tab),
             title: Text("Theme Light"),
-            trailing: Checkbox(value: !_isDark, onChanged: (v){
+            trailing: Checkbox(
+              value: !_isDark,
+              onChanged: (v) {
                 Get.changeTheme(ThemeData.light());
                 setState(() {
                   _isDark = false;
                 });
-            }),
+              },
+            ),
           ),
           Divider(),
           ListTile(
             leading: Icon(Icons.tab),
-            title: Text("Theme Black"),
-            trailing: Checkbox(value: _isDark, onChanged: (v){
-              Get.changeTheme(ThemeData.dark());
-              setState(() {
-                _isDark = true;
-              });
-            }),
+            title: Text("Theme Dark"),
+            trailing: Checkbox(
+              value: _isDark,
+              onChanged: (v) {
+                Get.changeTheme(ThemeData.dark());
+                setState(() {
+                  _isDark = true;
+                });
+              },
+            ),
           ),
           Divider(),
         ],

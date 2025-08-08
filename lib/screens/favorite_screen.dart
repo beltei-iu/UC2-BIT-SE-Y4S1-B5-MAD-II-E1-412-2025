@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mad_2_412/model/favorite.dart';
 import 'package:mad_2_412/services/favorite_service.dart';
 
@@ -10,7 +11,6 @@ class FavoriteScreen extends StatefulWidget {
 }
 
 class _FavoriteScreenState extends State<FavoriteScreen> {
-
   List<Favorite> favorites = [];
   bool _isLoading = false;
 
@@ -36,18 +36,18 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favorite"),
+        title: Text("favorite".tr, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         elevation: 0.5,
         backgroundColor: Colors.red,
       ),
-      body: _isLoading ?
-                Center(child: CircularProgressIndicator()) :
-          favorites.isEmpty ?
-                Center(child: Text("No Data")) :
-          ListView.builder(
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : favorites.isEmpty
+          ? Center(child: Text("No Data"))
+          : ListView.builder(
               itemCount: favorites.length,
-              itemBuilder: (BuildContext context, int index){
+              itemBuilder: (BuildContext context, int index) {
                 Favorite favorite = favorites[index];
                 return ListTile(
                   title: Text("Book ID ${favorite.bookId}"),
@@ -57,10 +57,11 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                     onPressed: () async {
                       await FavoriteService.instance.deleteOrder(favorite.id!);
                       _loadFavorites();
-                    }
-                    )
+                    },
+                  ),
                 );
-          })
+              },
+            ),
     );
   }
 }

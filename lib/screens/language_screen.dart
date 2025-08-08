@@ -10,7 +10,6 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-
   bool _isEnglish = true;
 
   @override
@@ -18,13 +17,11 @@ class _LanguageScreenState extends State<LanguageScreen> {
     super.initState();
     var locale = Get.deviceLocale;
     print(locale);
-    _isEnglish = locale?.languageCode == "en";
+    _isEnglish = locale?.languageCode == "en_US";
   }
-
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("language".tr),
@@ -34,26 +31,32 @@ class _LanguageScreenState extends State<LanguageScreen> {
       ),
       body: ListView(
         children: [
-            ListTile(
-              leading: Icon(Icons.language),
-              title: Text("khmerLanguage".tr),
-              trailing: Checkbox(value: !_isEnglish, onChanged: (v){
+          ListTile(
+            leading: Icon(Icons.language),
+            title: Text("khmerLanguage".tr),
+            trailing: Checkbox(
+              value: !_isEnglish,
+              onChanged: (v) {
                 Get.updateLocale(Locale('km', 'KH'));
                 setState(() {
                   _isEnglish = false;
                 });
-              }),
+              },
             ),
-            Divider(),
+          ),
+          Divider(),
           ListTile(
             leading: Icon(Icons.language),
             title: Text("englishLanguage".tr),
-            trailing: Checkbox(value: _isEnglish, onChanged: (v){
-              Get.updateLocale(Locale('en', 'US'));
-              setState(() {
-                _isEnglish = true;
-              });
-            }),
+            trailing: Checkbox(
+              value: _isEnglish,
+              onChanged: (v) {
+                Get.updateLocale(Locale('en', 'US'));
+                setState(() {
+                  _isEnglish = true;
+                });
+              },
+            ),
           ),
           Divider(),
         ],

@@ -1,6 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mad_2_412/data/shared_pref_data.dart';
 import 'package:mad_2_412/route/app_route.dart';
+import 'package:mad_2_412/screens/login_screen.dart';
+import 'package:mad_2_412/screens/phone_screen.dart';
 import 'package:mad_2_412/widgets/logo_widget.dart';
 import 'package:mad_2_412/widgets/social_login_widget.dart';
 
@@ -20,6 +24,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _fullNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  // Create FirebaseAuth
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -152,21 +159,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
             String fullName = _fullNameController.text;
             String email = _emailController.text;
             String password = _passwordController.text;
-
             print("Full Name : $fullName");
             print("Email : $email");
             print("Password : $password");
-
-            SharedPrefData.register(fullName, email, password);
-
-            // Perform login action
-            // ScaffoldMessenger.of(
-            //   context,
-            // ).showSnackBar(const SnackBar(content: Text('Logging in...')));
-            AppRoute.key.currentState?.pushReplacementNamed(AppRoute.home);
+            // Firebase Auth
+            _onRegister(email, password);
           }
         },
-        child: Text("Login"),
+        child: Text("Register"),
       ),
     );
   }
@@ -182,5 +182,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
         style: TextStyle(color: Colors.blue),
       ),
     );
+  }
+
+  Future<void> _onRegister(String email, String password) async {
+    try {
+      _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((UserCredential user) {
+            print("User : ${user.additionalUserInfo}");
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Register successful.')),
+            );
+            // Navigation
+            Get.to(LoginScreen());
+          })
+          .catchError((error) {
+            print("Error : $error");
+          });
+    } catch (e) {
+      print("Error : $e");
+    }
   }
 }
